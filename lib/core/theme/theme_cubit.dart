@@ -1,15 +1,17 @@
+// core/theme/theme_cubit.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
-import 'app_theme.dart';
+import 'theme_repository.dart';
 
-class ThemeCubit extends Cubit<ThemeData> {
-  ThemeCubit() : super(AppTheme.lightTheme);
+class ThemeCubit extends Cubit<bool> {
+  final ThemeRepository repository;
+
+  ThemeCubit(this.repository) : super(false) {
+    emit(repository.loadThemeMode());
+  }
 
   void toggleTheme() {
-    emit(
-      state.brightness == Brightness.light
-          ? AppTheme.darkTheme
-          : AppTheme.lightTheme,
-    );
+    final newValue = !state;
+    emit(newValue);
+    repository.saveThemeMode(newValue);
   }
 }

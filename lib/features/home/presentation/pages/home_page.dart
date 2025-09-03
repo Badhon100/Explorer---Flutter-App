@@ -2,8 +2,7 @@ import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_sw
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-  final String title;
+  const HomePage({super.key,});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Repositories"),
         actions: const [
           ThemeSwitch(), // 🔘 Dark/Light mode toggle
         ],
