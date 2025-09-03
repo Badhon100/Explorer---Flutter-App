@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         HomeLoaded(
           repositories: repositories,
-          hasReachedEnd: repositories.length < 50,
+          hasReachedEnd: repositories.length < 20,
           currentPage: 1,
         ),
       );
@@ -61,7 +61,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(
           stateNow.copyWith(
             repositories: [...stateNow.repositories, ...repositories],
-            hasReachedEnd: repositories.length < 50,
+            hasReachedEnd: repositories.length < 20,
             currentPage: nextPage,
           ),
         );

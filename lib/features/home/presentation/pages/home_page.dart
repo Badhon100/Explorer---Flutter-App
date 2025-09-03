@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:explorer_flutter_app/core/theme/app_colors.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
 import 'package:explorer_flutter_app/features/home/presentation/pages/details_page.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/skeleton_card_widget.dart';
@@ -55,6 +56,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: t18b800('Repositories'),
         actions: const [ThemeSwitch()],
       ),
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                       if (index >= state.repositories.length) {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(child: RepositoryCardSkeleton()),
                         );
                       }
 
