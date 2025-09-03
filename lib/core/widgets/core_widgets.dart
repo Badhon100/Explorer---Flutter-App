@@ -41,6 +41,7 @@ commonText(
   text,
   style: MyTextStyle(fontSize: size, fontWeight: fontWeight),
   maxLines: maxLine,
-  overflow: TextOverflow.ellipsis,
+  overflow: TextOverflow.visible,
   textAlign: textAlign, // Align text as specified
+  softWrap: true,
 );

@@ -20,7 +20,7 @@ class RepositoryRemoteDataSourceImpl implements RepositoryRemoteDataSource {
   Future<List<RepositoryModel>> searchRepositories({
     required String query,
     required int page,
-    int perPage = 50,
+    int perPage = 20,
   }) async {
     final response = await apiService.get(
       ApiConstants.searchRepositories,

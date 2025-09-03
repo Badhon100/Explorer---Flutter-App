@@ -10,7 +10,7 @@ class GetRepositoriesUseCase {
   Future<List<RepositoryEntity>> call({
     required String query,
     required int page,
-    int perPage = 50,
+    int perPage = 20,
   }) {
     return repository.searchRepositories(
       query: query,

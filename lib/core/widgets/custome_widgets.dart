@@ -24,8 +24,11 @@ t14b600(String title) =>
 t14b500(String title) =>
     commonText(title, size: 14, fontWeight: FontWeight.w500);
 
-
 t12b500(String title) =>
+    commonText(title, size: 12, fontWeight: FontWeight.w500,);
+
+
+t12b500ml3(String title) =>
     commonText(title, size: 12, fontWeight: FontWeight.w500, maxLine: 3);
 
 

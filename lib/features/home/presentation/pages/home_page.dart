@@ -1,4 +1,7 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
+import 'package:explorer_flutter_app/features/home/presentation/pages/details_page.dart';
+import 'package:explorer_flutter_app/features/home/presentation/widgets/skeleton_card_widget.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +18,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  bool isOffline = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    // Initial fetch
+    context.read<HomeBloc>().add(SearchRepositoriesEvent("a"));
+    _checkConnectivityAndFetch('');
+  }
+
+  Future<void> _checkConnectivityAndFetch(String query) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() => isOffline = true);
+    } else {
+      setState(() => isOffline = false);
+      context.read<HomeBloc>().add(SearchRepositoriesEvent(query));
+    }
   }
 
   void _onScroll() {
@@ -45,16 +63,26 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           HomeSearchBar(
-            onChanged: (query) {
-              context.read<HomeBloc>().add(SearchRepositoriesEvent(query));
-            },
+            onChanged: (query) => _checkConnectivityAndFetch(query),
           ),
           Expanded(
             child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
-                if (state is HomeLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                if (isOffline) {
+                  return const Center(child: Text('You are offline'));
+                } else if (state is HomeLoading) {
+                  // Show shimmer loaders
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: 6,
+                    itemBuilder: (context, index) =>
+                        const RepositoryCardSkeleton(),
+                  );
                 } else if (state is HomeLoaded) {
+                  if (state.repositories.isEmpty) {
+                    return const Center(child: Text('No repositories found'));
+                  }
+
                   return ListView.builder(
                     controller: _scrollController,
                     itemCount:
@@ -69,17 +97,37 @@ class _HomePageState extends State<HomePage> {
                       }
 
                       final repo = state.repositories[index];
-                      return RepositoryCard(
-                        name: repo.name,
-                        username: repo.ownerLogin,
-                        description: repo.description,
-                        stars: repo.stargazersCount,
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RepositoryDetailsPage(
+                                name: repo.name,
+                                username: repo.ownerLogin,
+                                description: repo.description,
+                                stars: repo.stargazersCount,
+                                // forks: repo.forks,
+                                avatarUrl: repo.ownerAvatarUrl,
+                                repoUrl: repo.htmlUrl,
+                                ),
+                            ),
+                          );
+                        },
+                        child: RepositoryCard(
+                          name: repo.name,
+                          username: repo.ownerLogin,
+                          description: repo.description,
+                          stars: repo.stargazersCount,
+                        ),
                       );
                     },
                   );
                 } else if (state is HomeError) {
                   return Center(child: Text(state.message));
                 }
+
                 return const SizedBox.shrink();
               },
             ),

@@ -48,7 +48,7 @@ class RepositoryCard extends StatelessWidget {
             const SizedBox(height: 4),
             t14b600(username,),
             const SizedBox(height: 8),
-            t12b500(description),
+            t12b500ml3(description),
           ],
         ),
       ),
