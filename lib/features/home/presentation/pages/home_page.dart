@@ -25,8 +25,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    // Initial fetch
-    context.read<HomeBloc>().add(SearchRepositoriesEvent("a"));
     _checkConnectivityAndFetch('');
   }
 
