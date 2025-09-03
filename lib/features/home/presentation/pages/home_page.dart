@@ -1,3 +1,4 @@
+import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_switch.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Repositories"),
+        title: t18b800("Repositories"),
         actions: const [
           ThemeSwitch(), // 🔘 Dark/Light mode toggle
         ],
