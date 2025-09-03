@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:explorer_flutter_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -10,25 +11,36 @@ class HomeSearchBar extends StatefulWidget {
 }
 
 class _HomeSearchBarState extends State<HomeSearchBar> {
-  // Only initialize once here
   final TextEditingController _controller = TextEditingController(
     text: 'Flutter',
   );
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-
-    // Trigger the onChanged callback with default value once when widget initializes
+    // Trigger default search once with debounce
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onChanged(_controller.text);
+      _onTextChanged(_controller.text);
     });
   }
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onTextChanged(String query) {
+    // Cancel previous timer if still active
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    // Start new debounce timer
+    _debounce = Timer(const Duration(seconds: 1), () {
+      // ✅ Only fires after 600ms of no typing
+      widget.onChanged(query.trim());
+    });
   }
 
   @override
@@ -36,8 +48,8 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: TextField(
-        controller: _controller, // ✅ Important!
-        onChanged: widget.onChanged,
+        controller: _controller,
+        onChanged: _onTextChanged, // ✅ debounce applied
         decoration: InputDecoration(
           hintText: 'Search',
           prefixIcon: const Icon(Icons.search, size: 20),
