@@ -1,6 +1,7 @@
 // core/di/injection.dart
 import 'package:explorer_flutter_app/core/const/api_constant.dart';
 import 'package:explorer_flutter_app/core/service/api_servie.dart';
+import 'package:explorer_flutter_app/features/home/data/datasources/repository_local_datasource.dart';
 import 'package:explorer_flutter_app/features/home/data/datasources/repository_remote_datasource.dart';
 import 'package:explorer_flutter_app/features/home/data/repositories/repository_repository_impl.dart';
 import 'package:explorer_flutter_app/features/home/domain/repositories/repository_repository.dart';
@@ -30,8 +31,11 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<RepositoryRemoteDataSource>(
     () => RepositoryRemoteDataSourceImpl(sl()),
   );
+  sl.registerLazySingleton<RepositoryLocalDataSource>(
+    () => RepositoryLocalDataSourceImpl(sl()),
+  );
 
-  sl.registerLazySingleton<RepositoryRepository>(() => RepositoryRepositoryImpl(sl()));
+  sl.registerLazySingleton<RepositoryRepository>(() => RepositoryRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()));
 
   // Domain Layer
   sl.registerLazySingleton(() => GetRepositoriesUseCase(sl()));

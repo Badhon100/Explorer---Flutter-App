@@ -29,4 +29,19 @@ class RepositoryModel extends RepositoryEntity {
       forksCount: json['forks_count'] ?? 0,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'full_name': fullName,
+      'description': description,
+      'html_url': htmlUrl,
+      'stargazers_count': stargazersCount,
+      'language': language,
+      'owner': {'login': ownerLogin, 'avatar_url': ownerAvatarUrl},
+      'forks_count': forksCount,
+    };
+  }
+
 }

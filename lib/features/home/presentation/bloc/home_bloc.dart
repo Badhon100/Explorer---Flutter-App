@@ -36,12 +36,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           repositories: repositories,
           hasReachedEnd: repositories.length < 20,
           currentPage: 1,
+          isCached: false,
         ),
       );
-    } catch (e) {
-      emit(HomeError(e.toString()));
+    } catch (_) {
+      // Fallback to cached data
+      try {
+        final cachedRepos = await getRepositoriesUseCase(
+          query: currentQuery,
+          page: 1,
+        );
+
+        emit(
+          HomeLoaded(
+            repositories: cachedRepos,
+            hasReachedEnd: true,
+            currentPage: 1,
+            isCached: true,
+          ),
+        );
+      } catch (e) {
+        emit(HomeError(e.toString()));
+      }
     }
   }
+
 
   Future<void> _onFetchNextPage(
     FetchNextPageEvent event,

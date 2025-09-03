@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:explorer_flutter_app/core/theme/app_colors.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
 import 'package:explorer_flutter_app/features/home/presentation/pages/details_page.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/skeleton_card_widget.dart';
@@ -79,50 +78,43 @@ class _HomePageState extends State<HomePage> {
                         const RepositoryCardSkeleton(),
                   );
                 } else if (state is HomeLoaded) {
-                  if (state.repositories.isEmpty) {
-                    return const Center(child: Text('No repositories found'));
-                  }
-
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount:
-                        state.repositories.length +
-                        (state.hasReachedEnd ? 0 : 1),
-                    itemBuilder: (context, index) {
-                      if (index >= state.repositories.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: RepositoryCardSkeleton()),
-                        );
-                      }
-
-                      final repo = state.repositories[index];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RepositoryDetailsPage(
-                                name: repo.name,
-                                username: repo.ownerLogin,
-                                description: repo.description,
-                                stars: repo.stargazersCount,
-                                forks: repo.forksCount,
-                                avatarUrl: repo.ownerAvatarUrl,
-                                repoUrl: repo.htmlUrl,
-                                ),
-                            ),
-                          );
-                        },
-                        child: RepositoryCard(
-                          name: repo.name,
-                          username: repo.ownerLogin,
-                          description: repo.description,
-                          stars: repo.stargazersCount,
+                  return Column(
+                    children: [
+                      if (state.isCached)
+                        Container(
+                          color: Colors.orangeAccent,
+                          padding: const EdgeInsets.all(8),
+                          child: const Text(
+                            "Showing cached data (offline mode)",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                      );
-                    },
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount:
+                              state.repositories.length +
+                              (state.hasReachedEnd ? 0 : 1),
+                          itemBuilder: (context, index) {
+                            if (index >= state.repositories.length) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                  child: RepositoryCardSkeleton(),
+                                ),
+                              );
+                            }
+                            final repo = state.repositories[index];
+                            return RepositoryCard(
+                              name: repo.name,
+                              username: repo.ownerLogin,
+                              description: repo.description,
+                              stars: repo.stargazersCount,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 } else if (state is HomeError) {
                   return Center(child: Text(state.message));
