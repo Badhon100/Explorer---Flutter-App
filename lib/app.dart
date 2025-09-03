@@ -1,4 +1,4 @@
-import 'package:explorer_flutter_app/core/di/service_locator.dart';
+import 'package:explorer_flutter_app/core/di/bloc_providers.dart';
 import 'package:explorer_flutter_app/core/theme/app_theme.dart';
 import 'package:explorer_flutter_app/core/theme/theme_cubit.dart';
 import 'package:explorer_flutter_app/features/home/presentation/pages/home_page.dart';
@@ -10,8 +10,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ThemeCubit>(),
+    return MultiBlocProvider(
+      providers: getAppBlocProviders(),
       child: BlocBuilder<ThemeCubit, bool>(
         builder: (context, isDark) {
           return MaterialApp(

@@ -13,14 +13,15 @@ class ThemeSwitch extends StatelessWidget {
       builder: (context, isDark) {
         return Row(
           children: [
-            t14b600("Dark mode"),
+            t14b500("Dark mode"),
             Transform.scale(
               scale: 0.8, // decrease overall size (height & width)
               child: Switch(
                 value: isDark,
-                activeColor: AppColors.green4D,
                 inactiveThumbColor: AppColors.grey99,
                 inactiveTrackColor: AppColors.greyE8,
+                activeTrackColor: AppColors.green4D,
+                activeColor: AppColors.whiteF2,
                 onChanged: (_) => context.read<ThemeCubit>().toggleTheme(),
               ),
             ),

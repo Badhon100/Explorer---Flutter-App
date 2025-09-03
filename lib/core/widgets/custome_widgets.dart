@@ -15,8 +15,18 @@ t18b800(String title) => commonText(
   fontWeight: FontWeight.w800,
 );
 
+t16b700(String title) =>
+    commonText(title, size: 16, fontWeight: FontWeight.w700);
+
 t14b600(String title) =>
     commonText(title, size: 14, fontWeight: FontWeight.w600);
+
+t14b500(String title) =>
+    commonText(title, size: 14, fontWeight: FontWeight.w500);
+
+
+t12b500(String title) =>
+    commonText(title, size: 12, fontWeight: FontWeight.w500, maxLine: 3);
 
 
 sH2() => const SizedBox(height: 2);
