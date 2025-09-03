@@ -1,45 +1,41 @@
-import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
-import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_switch.dart';
+import 'package:explorer_flutter_app/core/const/dummy_data.dart';
+import 'package:explorer_flutter_app/features/home/presentation/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
+import '../widgets/repository_list.dart';
+import '../widgets/theme_switch.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key,});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() => _counter++);
-  }
+  String query = '';
+  final repositories = List.generate(
+    10,
+    (index) => {
+      'name': 'Repository name',
+      'username': 'username',
+      'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'stars': 500,
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
-        title: t18b800("Repositories"),
-        actions: const [
-          ThemeSwitch(), // 🔘 Dark/Light mode toggle
+        title: const Text('Repositories'),
+        actions: const [ThemeSwitch()],
+      ),
+      body: Column(
+        children: [
+          HomeSearchBar(onChanged: (value) => setState(() => query = value)),
+          RepositoryList(repositories: dummyRepositories),
         ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        child: const Icon(Icons.add),
       ),
     );
   }
