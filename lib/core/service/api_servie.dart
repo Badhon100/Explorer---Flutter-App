@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class ApiService {
   final String baseUrl;
@@ -17,34 +18,28 @@ class ApiService {
       ),
     );
 
-    // Add interceptors
+    // Add custom auth interceptor
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // Add Authorization token if available
           if (_token != null) {
             options.headers['Authorization'] = 'Bearer $_token';
           }
-          print('REQUEST[${options.method}] => PATH: ${options.path}');
-          print('Headers: ${options.headers}');
-          print('QueryParams: ${options.queryParameters}');
-          print('Body: ${options.data}');
           handler.next(options);
         },
-        onResponse: (response, handler) {
-          print(
-            'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
-          );
-          print('Response data: ${response.data}');
-          handler.next(response);
-        },
-        onError: (DioError e, handler) {
-          print(
-            'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}',
-          );
-          print('Error data: ${e.response?.data}');
-          handler.next(e);
-        },
+      ),
+    );
+
+    // Add PrettyDioLogger for colorful logs
+    _dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90,
       ),
     );
   }

@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                                 username: repo.ownerLogin,
                                 description: repo.description,
                                 stars: repo.stargazersCount,
-                                // forks: repo.forks,
+                                forks: repo.forksCount,
                                 avatarUrl: repo.ownerAvatarUrl,
                                 repoUrl: repo.htmlUrl,
                                 ),

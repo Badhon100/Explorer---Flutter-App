@@ -11,6 +11,7 @@ class RepositoryModel extends RepositoryEntity {
     required super.language,
     required super.ownerLogin,
     required super.ownerAvatarUrl,
+    required super.forksCount,
   });
 
   factory RepositoryModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +26,7 @@ class RepositoryModel extends RepositoryEntity {
       language: json['language'] ?? '',
       ownerLogin: owner['login'] ?? '',
       ownerAvatarUrl: owner['avatar_url'] ?? '',
+      forksCount: json['forks_count'] ?? 0,
     );
   }
 }

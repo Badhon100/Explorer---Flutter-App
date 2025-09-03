@@ -2,6 +2,7 @@ import 'package:explorer_flutter_app/core/const/functions.dart';
 import 'package:explorer_flutter_app/core/theme/app_colors.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_switch.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RepositoryDetailsPage extends StatelessWidget {
@@ -11,7 +12,7 @@ class RepositoryDetailsPage extends StatelessWidget {
     required this.username,
     required this.description,
     required this.stars,
-    // required this.forks,
+    required this.forks,
     required this.avatarUrl,
     required this.repoUrl,
   });
@@ -19,13 +20,17 @@ class RepositoryDetailsPage extends StatelessWidget {
   final String username;
   final String description;
   final int stars;
-  // final int forks;
+  final int forks;
   final String avatarUrl;
   final String repoUrl;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: t18b800('Details'), actions: const [ThemeSwitch()]),
+      appBar: AppBar(
+        title: t18b800('Details'),
+        actions: const [ThemeSwitch()],
+        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(CupertinoIcons.back))
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -44,7 +49,7 @@ class RepositoryDetailsPage extends StatelessWidget {
                     sW16(),
                     Icon(Icons.call_split, size: 18),
                     sW4(),
-                    t12b500('4'),
+                    t12b500(forks.toString()),
                   ],
                 ),
               ],
@@ -87,14 +92,21 @@ class RepositoryDetailsPage extends StatelessWidget {
                       children: [
                         Icon(Icons.link, size: 16, color: Colors.white70),
                         SizedBox(width: 4),
-                        Text(
-                          repoUrl,
-                          style: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? AppColors
-                                      .whiteFF // dark mode card
-                                : AppColors.black00,
-                            decoration: TextDecoration.underline,
+                        SizedBox(
+                          width:
+                              200, // or MediaQuery.of(context).size.width * 0.5
+                          child: Text(
+                            repoUrl,
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? AppColors.whiteFF
+                                  : AppColors.black00,
+                              decoration: TextDecoration.underline,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            maxLines: 1,
                           ),
                         ),
                       ],
@@ -105,7 +117,7 @@ class RepositoryDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             t14b500(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+              description.isNotEmpty ? description : 'No description provided.',
             ),
           ],
         ),

@@ -8,9 +8,11 @@ class RepositoryEntity {
   final String language;
   final String ownerLogin;
   final String ownerAvatarUrl;
+  final int forksCount;
 
   RepositoryEntity({
     required this.id,
+    required this.forksCount,
     required this.name,
     required this.fullName,
     required this.description,
