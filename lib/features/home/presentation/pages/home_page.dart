@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
+import 'package:explorer_flutter_app/features/home/presentation/pages/details_page.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/skeleton_card_widget.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_switch.dart';
 import 'package:flutter/material.dart';
@@ -103,50 +104,79 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _onRefresh,
-                  child: BlocBuilder<HomeBloc, HomeState>(
-                    builder: (context, state) {
-                      if (state is HomeLoading) {
-                        return ListView.builder(
-                          controller: _scrollController,
-                          itemCount: 6,
-                          itemBuilder: (context, index) =>
-                              const RepositoryCardSkeleton(),
+                  child: BlocListener<HomeBloc, HomeState>(
+                    listener: (context, state) {
+                      if (state is HomeLoaded && state.errorMessage != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Something went wrong! Please try again."),
+                            backgroundColor: Colors.redAccent,
+                          ),
                         );
-                      } else if (state is HomeLoaded) {
-                        return ListView.builder(
-                          controller: _scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount:
-                              state.repositories.length +
-                              (state.hasReachedEnd ? 0 : 1),
-                          itemBuilder: (context, index) {
-                            if (index >= state.repositories.length) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(child: RepositoryCardSkeleton()),
-                              );
-                            }
-                            final repo = state.repositories[index];
-                            return RepositoryCard(
-                              name: repo.name,
-                              username: repo.ownerLogin,
-                              description: repo.description,
-                              stars: repo.stargazersCount,
-                            );
-                          },
-                        );
-                      } else if (state is HomeError) {
-                        return Center(child: Text(state.message));
                       }
-                      return const SizedBox.shrink();
                     },
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeLoading) {
+                          return ListView.builder(
+                            controller: _scrollController,
+                            itemCount: 6,
+                            itemBuilder: (context, index) =>
+                                const RepositoryCardSkeleton(),
+                          );
+                        } else if (state is HomeLoaded) {
+                          return ListView.builder(
+                            controller: _scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount:
+                                state.repositories.length +
+                                (state.hasReachedEnd ? 0 : 1),
+                            itemBuilder: (context, index) {
+                              if (index >= state.repositories.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: RepositoryCardSkeleton(),
+                                  ),
+                                );
+                              }
+                              final repo = state.repositories[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RepositoryDetailsPage
+                                      (
+                                        avatarUrl: repo.ownerAvatarUrl,
+                                        name: repo.name,
+                                        username: repo.ownerLogin,
+                                        description: repo.description,
+                                        stars: repo.stargazersCount,
+                                        forks: repo.forksCount,
+                                        repoUrl: repo.htmlUrl,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: RepositoryCard(
+                                  name: repo.name,
+                                  username: repo.ownerLogin,
+                                  description: repo.description,
+                                  stars: repo.stargazersCount,
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-
-          // Offline banner at bottom
           if (isOffline)
             Positioned(
               left: 0,

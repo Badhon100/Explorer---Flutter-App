@@ -53,14 +53,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             hasReachedEnd: true,
             currentPage: 1,
             isCached: true,
+            errorMessage: "Failed to fetch latest data. Showing cached.",
           ),
         );
       } catch (e) {
-        emit(HomeError(e.toString()));
+        // In case cached data also fails, show toast via error message
+        emit(
+          HomeLoaded(
+            repositories: [],
+            hasReachedEnd: true,
+            currentPage: 1,
+            isCached: true,
+            errorMessage: e.toString(),
+          ),
+        );
       }
     }
   }
-
 
   Future<void> _onFetchNextPage(
     FetchNextPageEvent event,
@@ -88,13 +97,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           repositories: [...stateNow.repositories, ...repositories],
           hasReachedEnd: repositories.length < 20,
           currentPage: nextPage,
+          errorMessage: null,
         ),
       );
     } catch (e) {
-      emit(HomeError(e.toString()));
+      // Keep existing data and show error as toast
+      emit(stateNow.copyWith(errorMessage: e.toString()));
     } finally {
       isFetching = false;
     }
   }
-
 }
