@@ -67,28 +67,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     final stateNow = state;
-    if (stateNow is HomeLoaded && !stateNow.hasReachedEnd && !isFetching) {
-      isFetching = true;
-      final nextPage = stateNow.currentPage + 1;
 
-      try {
-        final repositories = await getRepositoriesUseCase(
-          query: currentQuery,
-          page: nextPage,
-        );
+    if (stateNow is! HomeLoaded || stateNow.hasReachedEnd || isFetching) {
+      return;
+    }
 
-        emit(
-          stateNow.copyWith(
-            repositories: [...stateNow.repositories, ...repositories],
-            hasReachedEnd: repositories.length < 20,
-            currentPage: nextPage,
-          ),
-        );
-      } catch (e) {
-        emit(HomeError(e.toString()));
-      } finally {
-        isFetching = false;
-      }
+    final queryToUse = currentQuery.isEmpty ? 'flutter' : currentQuery;
+
+    isFetching = true;
+    final nextPage = stateNow.currentPage + 1;
+
+    try {
+      final repositories = await getRepositoriesUseCase(
+        query: queryToUse,
+        page: nextPage,
+      );
+
+      emit(
+        stateNow.copyWith(
+          repositories: [...stateNow.repositories, ...repositories],
+          hasReachedEnd: repositories.length < 20,
+          currentPage: nextPage,
+        ),
+      );
+    } catch (e) {
+      emit(HomeError(e.toString()));
+    } finally {
+      isFetching = false;
     }
   }
+
 }

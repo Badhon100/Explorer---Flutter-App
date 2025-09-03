@@ -19,7 +19,6 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
   @override
   void initState() {
     super.initState();
-    // Trigger default search once with debounce
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onTextChanged(_controller.text);
     });
@@ -33,12 +32,10 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
   }
 
   void _onTextChanged(String query) {
-    // Cancel previous timer if still active
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     // Start new debounce timer
     _debounce = Timer(const Duration(seconds: 1), () {
-      // ✅ Only fires after 600ms of no typing
       widget.onChanged(query.trim());
     });
   }
@@ -49,7 +46,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
       padding: const EdgeInsets.all(16.0),
       child: TextField(
         controller: _controller,
-        onChanged: _onTextChanged, // ✅ debounce applied
+        onChanged: _onTextChanged, 
         decoration: InputDecoration(
           hintText: 'Search',
           prefixIcon: const Icon(Icons.search, size: 20),
