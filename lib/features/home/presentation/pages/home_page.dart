@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
-import 'package:explorer_flutter_app/features/home/presentation/pages/details_page.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/skeleton_card_widget.dart';
 import 'package:explorer_flutter_app/features/home/presentation/widgets/theme_switch.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   bool isOffline = false;
+  String _lastQuery = '';
 
   @override
   void initState() {
@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
       setState(() => isOffline = true);
     } else {
       setState(() => isOffline = false);
+      _lastQuery = query;
       context.read<HomeBloc>().add(SearchRepositoriesEvent(query));
     }
   }
@@ -43,6 +44,10 @@ class _HomePageState extends State<HomePage> {
         _scrollController.position.maxScrollExtent - 200) {
       context.read<HomeBloc>().add(FetchNextPageEvent());
     }
+  }
+
+  Future<void> _onRefresh() async {
+    await _checkConnectivityAndFetch(_lastQuery);
   }
 
   @override
@@ -65,63 +70,70 @@ class _HomePageState extends State<HomePage> {
             onChanged: (query) => _checkConnectivityAndFetch(query),
           ),
           Expanded(
-            child: BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                if (isOffline) {
-                  return const Center(child: Text('You are offline'));
-                } else if (state is HomeLoading) {
-                  // Show shimmer loaders
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: 6,
-                    itemBuilder: (context, index) =>
-                        const RepositoryCardSkeleton(),
-                  );
-                } else if (state is HomeLoaded) {
-                  return Column(
-                    children: [
-                      if (state.isCached)
-                        Container(
-                          color: Colors.orangeAccent,
-                          padding: const EdgeInsets.all(8),
-                          child: const Text(
-                            "Showing cached data (offline mode)",
-                            style: TextStyle(color: Colors.white),
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (isOffline) {
+                    return const Center(child: Text('You are offline'));
+                  } else if (state is HomeLoading) {
+                    // Show shimmer loaders
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount: 6,
+                      itemBuilder: (context, index) =>
+                          const RepositoryCardSkeleton(),
+                    );
+                  } else if (state is HomeLoaded) {
+                    return Column(
+                      children: [
+                        if (state.isCached)
+                          Container(
+                            color: Colors.orangeAccent,
+                            padding: const EdgeInsets.all(8),
+                            child: const Text(
+                              "Showing cached data (offline mode)",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: _onRefresh,
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount:
+                                  state.repositories.length +
+                                  (state.hasReachedEnd ? 0 : 1),
+                              itemBuilder: (context, index) {
+                                if (index >= state.repositories.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    child: Center(
+                                      child: RepositoryCardSkeleton(),
+                                    ),
+                                  );
+                                }
+                                final repo = state.repositories[index];
+                                return RepositoryCard(
+                                  name: repo.name,
+                                  username: repo.ownerLogin,
+                                  description: repo.description,
+                                  stars: repo.stargazersCount,
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      Expanded(
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount:
-                              state.repositories.length +
-                              (state.hasReachedEnd ? 0 : 1),
-                          itemBuilder: (context, index) {
-                            if (index >= state.repositories.length) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(
-                                  child: RepositoryCardSkeleton(),
-                                ),
-                              );
-                            }
-                            final repo = state.repositories[index];
-                            return RepositoryCard(
-                              name: repo.name,
-                              username: repo.ownerLogin,
-                              description: repo.description,
-                              stars: repo.stargazersCount,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                } else if (state is HomeError) {
-                  return Center(child: Text(state.message));
-                }
-
-                return const SizedBox.shrink();
-              },
+                      ],
+                    );
+                  } else if (state is HomeError) {
+                    return Center(child: Text(state.message));
+                  }
+              
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
           ),
         ],
