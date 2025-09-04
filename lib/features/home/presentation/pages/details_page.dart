@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:explorer_flutter_app/core/const/functions.dart';
 import 'package:explorer_flutter_app/core/theme/app_colors.dart';
 import 'package:explorer_flutter_app/core/widgets/custome_widgets.dart';
@@ -29,7 +30,12 @@ class RepositoryDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: t18b800('Details'),
         actions: const [ThemeSwitch()],
-        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(CupertinoIcons.back))
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(CupertinoIcons.back),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -69,10 +75,22 @@ class RepositoryDetailsPage extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 32,
-                    backgroundImage: NetworkImage(
-                      avatarUrl, // Replace with actual image
+                    backgroundColor: Colors.grey.shade200,
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: avatarUrl,
+                        width: 64,
+                        height: 64,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            CupertinoActivityIndicator(),
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/place_holder.png",
+                        ),
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 8),
                   Text(
                     username,
