@@ -70,15 +70,14 @@ This separation ensures **testability, scalability, and maintainability**.
 1. Clone the repository:
    ```
    git clone https://github.com/Badhon100/Explorer---Flutter-App.git
+   
 Install dependencies:
 
-    ```
     flutter pub get
 
 
 Run the app:
 
-    ```
     flutter run
 
 📦 Dependencies
