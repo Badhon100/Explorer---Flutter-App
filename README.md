@@ -5,6 +5,12 @@ The app integrates with GitHub’s REST API, supports offline caching, and follo
 
 ---
 
+## App link 
+
+You can try the app using this link
+
+    https://drive.google.com/file/d/1950xPIZF763URBSBGdeXADXQtywMMMS4/view?usp=sharing
+
 ## 🚀 Features
 
 ### 🔧 Core Features
