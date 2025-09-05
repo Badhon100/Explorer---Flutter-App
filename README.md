@@ -63,6 +63,10 @@ This separation ensures **testability, scalability, and maintainability**.
 
 ---
 
+## 🔧 Environment
+- Flutter SDK: >=3.22.0
+- Dart SDK: >=3.8.1 <4.0.0
+
 ## 🛠️ Setup Instructions
 
 1. Clone the repository:
