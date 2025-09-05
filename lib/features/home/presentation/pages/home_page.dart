@@ -125,6 +125,41 @@ class _HomePageState extends State<HomePage> {
                                 const RepositoryCardSkeleton(),
                           );
                         } else if (state is HomeLoaded) {
+                          if (state.repositories.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.inbox,
+                                    size: 80,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "No repositories found",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "Try searching with a different keyword.",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.grey.shade600),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
                           return ListView.builder(
                             controller: _scrollController,
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -146,16 +181,16 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => RepositoryDetailsPage
-                                      (
-                                        avatarUrl: repo.ownerAvatarUrl,
-                                        name: repo.name,
-                                        username: repo.ownerLogin,
-                                        description: repo.description,
-                                        stars: repo.stargazersCount,
-                                        forks: repo.forksCount,
-                                        repoUrl: repo.htmlUrl,
-                                      ),
+                                      builder: (context) =>
+                                          RepositoryDetailsPage(
+                                            avatarUrl: repo.ownerAvatarUrl,
+                                            name: repo.name,
+                                            username: repo.ownerLogin,
+                                            description: repo.description,
+                                            stars: repo.stargazersCount,
+                                            forks: repo.forksCount,
+                                            repoUrl: repo.htmlUrl,
+                                          ),
                                     ),
                                   );
                                 },
@@ -169,6 +204,7 @@ class _HomePageState extends State<HomePage> {
                             },
                           );
                         }
+
                         return const SizedBox.shrink();
                       },
                     ),
