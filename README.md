@@ -73,13 +73,13 @@ This separation ensures **testability, scalability, and maintainability**.
 Install dependencies:
 
 ```
-
 flutter pub get
+
 
 Run the app:
 
-```
 
+```
 flutter run
 
 📦 Dependencies
