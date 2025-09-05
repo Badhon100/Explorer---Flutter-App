@@ -46,16 +46,14 @@ The app integrates with GitHub’s REST API, supports offline caching, and follo
 
 The project follows **Clean Architecture**:
 
-lib/
-┣ core/ # Common utilities, themes, widgets
-┣ features/
-┃ ┗ home/
-┃ ┣ data/ # Remote + Local data sources, DTOs, models
-┃ ┣ domain/ # Entities, Repository interfaces, UseCases
-┃ ┣ presentation/ # Bloc, Pages, Widgets
-┣ main.dart # App entry point, DI setup
-
-yaml
+    lib/
+        ┣ core/ # Common utilities, themes, widgets
+        ┣ features/
+        ┃ ┗ home/
+        ┃ ┣ data/ # Remote + Local data sources, DTOs, models
+        ┃ ┣ domain/ # Entities, Repository interfaces, UseCases
+        ┃ ┣ presentation/ # Bloc, Pages, Widgets
+        ┣ main.dart # App entry point, DI setup
 
 - **Data Layer**: Responsible for API calls and local caching.  
 - **Domain Layer**: Contains business logic (use cases, entities).  
@@ -70,7 +68,7 @@ This separation ensures **testability, scalability, and maintainability**.
 1. Clone the repository:
    ```
    git clone https://github.com/Badhon100/Explorer---Flutter-App.git
-   
+
 Install dependencies:
 
     flutter pub get
