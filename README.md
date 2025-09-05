@@ -72,15 +72,14 @@ This separation ensures **testability, scalability, and maintainability**.
    git clone https://github.com/Badhon100/Explorer---Flutter-App.git
 Install dependencies:
 
-```
-flutter pub get
+    ```
+    flutter pub get
 
 
 Run the app:
 
-
-```
-flutter run
+    ```
+    flutter run
 
 📦 Dependencies
 flutter_bloc – State management
