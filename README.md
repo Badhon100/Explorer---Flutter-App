@@ -72,9 +72,13 @@ This separation ensures **testability, scalability, and maintainability**.
    git clone https://github.com/Badhon100/Explorer---Flutter-App.git
 Install dependencies:
 
+```
+
 flutter pub get
 
 Run the app:
+
+```
 
 flutter run
 
@@ -87,7 +91,7 @@ dio – Network requests
 
 connectivity_plus – Connectivity checking
 
-hive / shared_preferences – Offline caching
+shared_preferences – Offline caching
 
 get_it – Dependency injection
 
